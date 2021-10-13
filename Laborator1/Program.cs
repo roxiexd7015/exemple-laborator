@@ -8,6 +8,7 @@ namespace Laborator1
 {
     class Program
     {
+        private static readonly Random random = new Random();
         public static string VerificareNume()
         {
             Console.Write("Introdu nume de client: ");
@@ -18,61 +19,73 @@ namespace Laborator1
             Console.Write("Introdu parola: ");
             return Console.ReadLine();
         }
-        private static List<CosNevalid> IncarcaProduse()
-        {
-            List<CosNevalid> produseIncarcate = new();
-            return produseIncarcate;
-        }
-        static void Main(string[] args)
-        {
-            var client = new Client(VerificareNume(), VerificareParola());
-            if(client.Nume!="Client"||client.Parola!="1234")
-            {
-                Console.WriteLine("Date eronate!");
-                return;
-            }
-            Console.WriteLine("\nCUMPARATURI PLACUTE!:)");
-            List<Produs> listaProduse2 = new List<Produs>();
 
-            while (true)
+        private static List<CosClientNevalidat> IncarcaProduse()
+        {
+            List<CosClientNevalidat> listaProduse = new();
+            do
             {
-                var listaProduse = ListaProduse.Produse();
-                Console.WriteLine();
-                listaProduse.ForEach(Console.WriteLine);
-                Console.WriteLine("\nIntroduceti ID-ul produsul dorit sau tastati X daca ati terminat cumparaturile:");
-                
-                var introdus1 = Console.ReadLine();
-                if (introdus1.Equals("X"))
+                //read client registration number and products and create a list of products
+                var client = new Client(VerificareNume(), VerificareParola());
+                if (client.Nume != "Client" || client.Parola != "1234")
                 {
-                    Console.WriteLine("\nMultumim pentru cumparaturi, la revedere!");
+                    Console.WriteLine("Date eronate!");
+                    break;
+                }
+                Console.WriteLine("\nCUMPARATURI PLACUTE!:)");
+                List<Produs> listaProduse2 = new List<Produs>();
+
+                var cantIntrodusa = ReadValue("Cantitate: ");
+                if (string.IsNullOrEmpty(cantIntrodusa))
+                {
                     break;
                 }
 
-                var idIntrodus = int.Parse(introdus1.Trim());
-                if (!listaProduse.Exists(x => x.Id == introdus1))
+                var idProd = ReadValue("ID: ");
+                if (string.IsNullOrEmpty(idProd))
                 {
-                    Console.WriteLine("\n!!!ID-ul introdus nu exista!!!");
-                    continue;
+                    break;
                 }
 
-                Console.WriteLine("Introduceti cantitatea dorita: ");
-                var introdus2 = Console.ReadLine();
-                Console.WriteLine("\nAm adaugat produsul in cos!");
-                Console.WriteLine("COSUL CURENT: \n");
-                listaProduse2.Add(listaProduse.Find(x => x.Id.Contains(introdus1)));
-                listaProduse2.ForEach(Console.WriteLine);
-            }
+                var denProd = ReadValue("Denumire: ");
+                if (string.IsNullOrEmpty(denProd))
+                {
+                    break;
+                }
 
-
-            /*var produseIncarcate = IncarcaProduse().ToArray();
+                try
+                {
+                    listaProduse.Add(new(client.Nume, cantIntrodusa, idProd, denProd));
+                }
+                catch
+                {
+                    throw new IdProdusInvalidExceptie("Produs invalid. ERROR");
+                }
+            } while (true);
+            return listaProduse;
+        }
+        private static IStareCos CosValidat(CosNevalid produseNevalidate) =>
+          random.Next(100) > 50 ?
+          new CosInvalid(new List<CosClientNevalidat>(), "Eroare random")
+          : new CosValid(new List<CosClientValidat>());
+        private static string? ReadValue(string prompt)
+        {
+            Console.Write(prompt);
+            return Console.ReadLine();
+        }
+        static void Main(string[] args)
+        {
+            CosGol cosGol = new();
+            var produseIncarcate = IncarcaProduse().ToArray();
             CosNevalid cosNevalid = new(produseIncarcate);
-            IStareCos result = CosValid(cosNevalid);
+            IStareCos result = CosValidat(cosNevalid);
             result.Match(
                 whenCosNevalid: cosNevalid => cosNevalid,
                 whenCosPlatit: cosPlatit => cosPlatit,
+                whenCosInvalid: cosInvalid => cosInvalid,
                 whenCosGol: cosGol => cosGol,
                 whenCosValid: cosValid => cosValid
-            );*/
+            );
 
         }
     }

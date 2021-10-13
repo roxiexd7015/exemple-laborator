@@ -11,9 +11,10 @@ namespace Laborator1.Domain
     public static partial class StareCos
     {
         public interface IStareCos { }
-        public record CosValid(IReadOnlyCollection<CosClientValidat> ListaProduse): IStareCos;
-        public record CosNevalid(IReadOnlyCollection<CosClientNevalidat> ListaProduse, string motiv): IStareCos;
-        public record CosPlatit(IReadOnlyCollection<CosClientValidat> ListaProduse, float totalPlatit): IStareCos;
-        public record CosGol(IReadOnlyCollection<CosClientValidat> ListaProduse): IStareCos;
+        public record CosInvalid(IReadOnlyCollection<CosClientNevalidat> ListaProduse, string motiv) : IStareCos;
+        public record CosValid(IReadOnlyCollection<CosClientValidat> ListaProduse) : IStareCos;
+        public record CosNevalid(IReadOnlyCollection<CosClientNevalidat> ListaProduse) : IStareCos;
+        public record CosPlatit(IReadOnlyCollection<CosClientValidat> ListaProduse) : IStareCos;
+        public record CosGol() : IStareCos;
     }
 }

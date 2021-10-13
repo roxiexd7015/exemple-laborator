@@ -12,11 +12,11 @@ namespace Laborator1.Domain
         {
             return new List<Produs>
             {
-                new Produs("001","Paine",50, 1.50f),
-                new Produs("002", "Carne de pui", 10, 16.99f),
-                new Produs("003","Inghetata",23, 2.30f),
+                new Produs("50","001","Paine", "1.50"),
+                new Produs("5","002", "Carne de pui", "16.99"),
+                new Produs("23","003","Inghetata", "2.30"),
             };
         }
-        
+
     }
 }

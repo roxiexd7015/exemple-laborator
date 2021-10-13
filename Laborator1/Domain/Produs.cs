@@ -8,26 +8,47 @@ namespace Laborator1.Domain
 {
     public record Produs
     {
-        private string id;
-        private string denumire;
-        private Int16 cantitate;
-        private float pret;
+        public int Cantitate { get; }
+        public string Id { get; }
+        public string Denumire { get; }
+        public string Pret { get; }
 
-        public Produs(string id,string denumire, short cantitate, float pret)
+        public Produs(string cantitate, string id, string denumire, string pret)
         {
-            this.denumire = denumire;
-            this.id = id;
-            this.cantitate = cantitate;
-            this.pret = pret;
+            // try parsing the quantity from string to Int32
+            try
+            {
+                Cantitate = Int32.Parse(cantitate);
+            }
+            catch
+            {
+                Cantitate = 0;
+                throw new CantitateInvalidaExceptie($"{cantitate:0.##} reprezinta o cantitate invalida.");
+            }
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                Id = id;
+            }
+            else
+            {
+                throw new IdProdusInvalidExceptie($"{id:0.##} nu reprezinta o valoare valida.");
+            }
+            if (!string.IsNullOrEmpty(denumire))
+            {
+                Denumire = denumire;
+            }
+            else
+            {
+                throw new IdProdusInvalidExceptie($"{denumire:0.##} nu exista.");
+            }
+
+            Console.WriteLine($"\nProdus: \n\tcantitate: {Cantitate}\n\tID: {Id}\n\tdenumire: {Denumire}\n\tpret: {Pret}");
         }
-        public string Id { get => id; set => id = value; }
-        public string Denumire { get => denumire; set => denumire = value; }
-        public short Cantitate { get => cantitate; set => cantitate = value; }
-        public float Pret { get => pret; set => pret = value; }
 
         public override string ToString()
         {
-            return "ID: " + id + ", denumire: " + denumire + ", cantitate: " + cantitate + " PRET: " + pret;
+            return $"{Cantitate:0.##}";
         }
     }
 

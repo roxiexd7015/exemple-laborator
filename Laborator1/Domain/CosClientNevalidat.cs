@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Laborator1.Domain
 {
-    public record CosClientNevalidat(Int16 Id);
+    public record CosClientNevalidat(string client, string cantitate, string id, string denumire);
 }
