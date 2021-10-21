@@ -12,8 +12,6 @@ namespace Laborator1.Domain
     public static partial class CartStates
     {
         public interface ICartStates { }
-
-        public record EmptyCart() : ICartStates;
         public record UnvalidatedCart : ICartStates
         {
             public UnvalidatedCart(IReadOnlyCollection<UnvalidateCart> productsList)
