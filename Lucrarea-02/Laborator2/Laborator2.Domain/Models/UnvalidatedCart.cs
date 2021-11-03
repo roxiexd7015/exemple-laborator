@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Laborator2.Domain
 {
-    public record UnvalidateCart(string name, string quantity);
+    public record UnvalidatedCart(string ProductCode, string ProductPrice, string ProductQuantity);
 }

@@ -10,11 +10,11 @@ namespace Laborator2.Domain
         {
         }
 
-        public InvalidProductQuantityException(string? message) : base(message)
+        public InvalidProductQuantityException(string message) : base(message)
         {
         }
 
-        public InvalidProductQuantityException(string? message, Exception? innerException) : base(message, innerException)
+        public InvalidProductQuantityException(string message, Exception innerException) : base(message, innerException)
         {
         }
 

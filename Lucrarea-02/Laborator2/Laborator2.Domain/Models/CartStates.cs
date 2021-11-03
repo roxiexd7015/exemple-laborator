@@ -5,46 +5,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Laborator1.Domain
+namespace Laborator2.Domain.Models
 {
     [AsChoice]
 
     public static partial class CartStates
     {
         public interface ICartStates { }
-        public record UnvalidatedCart : ICartStates
+        public record EmptyCartState : ICartStates
         {
-            public UnvalidatedCart(IReadOnlyCollection<UnvalidateCart> productsList)
+
+        }
+        public record UnvalidatedCartState : ICartStates
+        {
+            public UnvalidatedCartState(IReadOnlyCollection<UnvalidatedCart> productsList)
             {
                 ProductsList = productsList;
             }
-            public IReadOnlyCollection<UnvalidateCart> ProductsList { get; }
+            public IReadOnlyCollection<UnvalidatedCart> ProductsList { get; }
         }
-
-        public record InvalidatedCart : ICartStates
+        public record InvalidatedCartState : ICartStates
         {
-            internal InvalidatedCart(IReadOnlyCollection<UnvalidateCart> productsList, string reason)
+            internal InvalidatedCartState(IReadOnlyCollection<UnvalidatedCart> productsList, string csv)
             {
                 ProductsList = productsList;
-                Reason = reason;
+                Csv = csv;
             }
 
-            public IReadOnlyCollection<UnvalidateCart> GradeList { get; }
-            public string Reason { get; }
+            public IReadOnlyCollection<UnvalidatedCart> ProductsList { get; }
+            public string Csv { get; }
         }
 
-        public record ValidatedCart : ICartStates
+        public record ValidatedCartState : ICartStates
         {
-            internal ValidatedCart(IReadOnlyCollection<ValidateCart> productsList)
+            internal ValidatedCartState(IReadOnlyCollection<ValidatedCart> productsList)
             {
                 ProductsList = productsList;
             }
 
-            public IReadOnlyCollection<ValidateCart> ProductsList { get; }
+            public IReadOnlyCollection<ValidatedCart> ProductsList { get; }
         }
-        public record CalculatedCart : ICartStates
+        public record CalculatedCartState : ICartStates
         {
-            internal CalculatedCart(IReadOnlyCollection<CalculatedFinalPrice> productsList)
+            internal CalculatedCartState(IReadOnlyCollection<CalculatedFinalPrice> productsList)
             {
                 ProductsList = productsList;
             }
@@ -52,9 +55,9 @@ namespace Laborator1.Domain
             public IReadOnlyCollection<CalculatedFinalPrice> ProductsList { get; }
         }
 
-        public record PublishedCart : ICartStates
+        public record PaidCartState : ICartStates
         {
-            internal PublishedCart(IReadOnlyCollection<CalculatedFinalPrice> productsList, string csv)
+            internal PaidCartState(IReadOnlyCollection<CalculatedFinalPrice> productsList, string csv)
             {
                 ProductsList = productsList;
                 Csv = csv;

@@ -5,52 +5,41 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Cart.Domain
+namespace Laborator2.Domain.Models
 {
     public record Client
     {
-        private static readonly Regex ValidName = new("^client[0-9]{3}$");
-
-        public string Name { get; }
+        private static readonly Regex ValidAddress = new("^RO");
         public string Address { get; }
 
-        public Client(string name, string address)
+        public Client(string address)
         {
-            if (ValidPattern.IsMatch(value))
-            {
-                Name = name;
-            }
-            else
-            {
-                throw new InvalidClientNameException("Client name is invalid.");
-            }
-
-            if (!string.IsNullOrEmpty(address)) // add some regex maybe
+            if (IsValid(address))
             {
                 Address = address;
             }
             else
             {
-                throw new InvalidClientAddressException($"{address:0.##} is an invalid address value.");
+                throw new InvalidClientAddressException("Client name is invalid.");
             }
         }
 
         public override string ToString()
         {
-            return $"{Name:0.##}, {Address:0.##}";
+            return $"{Address:0.##}";
         }
 
-        private static bool IsValid(string stringValue) => ValidName.IsMatch(stringValue);
+        private static bool IsValid(string stringValue) => ValidAddress.IsMatch(stringValue);
 
-        public static bool TryParse(string stringValue, out Client name)
+        public static bool TryParseAddress(string stringValue, out Client address)
         {
             bool isValid = false;
-            name = null;
+            address = null;
 
             if (IsValid(stringValue))
             {
                 isValid = true;
-                name = new(stringValue);
+                address = new(stringValue);
             }
 
             return isValid;

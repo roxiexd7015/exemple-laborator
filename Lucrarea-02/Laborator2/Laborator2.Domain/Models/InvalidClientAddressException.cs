@@ -10,11 +10,11 @@ namespace Laborator2.Domain
         {
         }
 
-        public InvalidClientAddressException(string? message) : base(message)
+        public InvalidClientAddressException(string message) : base(message)
         {
         }
 
-        public InvalidClientAddressException(string? message, Exception? innerException) : base(message, innerException)
+        public InvalidClientAddressException(string message, Exception innerException) : base(message, innerException)
         {
         }
 

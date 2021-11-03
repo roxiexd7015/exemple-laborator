@@ -1,9 +1,9 @@
 ﻿using Laborator2.Domain.Models;
+using Laborator2.Domain;
 using System;
 using System.Collections.Generic;
 using static Laborator2.Domain.Models.CartStates;
-using static Laborator2.Domain.ProductsPriceOperation;
-using Laborator2.Domain;
+using static Laborator2.Domain.Models.PaidCartEvent;
 
 namespace Laborator2
 {
@@ -14,56 +14,71 @@ namespace Laborator2
         static void Main(string[] args)
         {
             var productsList = ReadProductsList().ToArray();
-            PublishCartCommand command = new(productsList);
-            PublishCartWorkflow workflow = new PublishCartWorkflow();
-            var result = workflow.Execute(command, (name) => true);
+            PayCartCommand command = new(productsList);
+            PaidCartWorkflow workflow = new PaidCartWorkflow();
+            var result = workflow.Execute(command, (code) => true);
 
             result.Match(
-                    whenCartPublishFailedEvent: @event =>
+                    whenPaidCartFailedEvent: @event =>
                     {
-                        Console.WriteLine($"Publish failed: {@event.Reason}");
+                        Console.WriteLine($"Payment failed: {@event.Reason}");
                         return @event;
                     },
-                    whenCartPublishSucceededEvent: @event =>
+                    whenPaidCartSuccedeedEvent: @event =>
                     {
-                        Console.WriteLine($"Publish succeeded.");
+                        Console.WriteLine($"Payment succeeded.");
                         Console.WriteLine(@event.Csv);
                         return @event;
                     }
                 );
 
-            Console.WriteLine("Hello World!");
+            var name = ReadValue("Client name: ");
+            Console.WriteLine("Welcome, " + name.ToString());
+            var address = ReadValue("Client address: ");
+            Console.WriteLine("Delivery will be made at: " + address.ToString());
         }
 
-        private static List<UnvalidateCart> ReadProductsList()
+        private static List<UnvalidatedCart> ReadProductsList()
         {
-            List<UnvalidateCart> productsList = new();
+            List<UnvalidatedCart> productsList = new();
+            bool state = false;
             do
             {
-                var name = ReadValue("Client name: ");
-                if (string.IsNullOrEmpty(name))
+                var code = ReadValue("Product code: ");
+                if (string.IsNullOrEmpty(code))
                 {
                     break;
                 }
-
-                var cart = ReadValue("Cart: ");
-                if (string.IsNullOrEmpty(cart))
+                var price = ReadValue("Product price: ");
+                if (string.IsNullOrEmpty(price))
                 {
                     break;
                 }
-
-                var activityClient = ReadValue("Activity Client: ");
-                if (string.IsNullOrEmpty(activityClient))
+                var quantity = ReadValue("Product quantity: ");
+                if (string.IsNullOrEmpty(quantity))
                 {
                     break;
                 }
+                productsList.Add(new(code, price, quantity));
 
-                productsList.Add(new(name, cart, activityClient));
-            } while (true);
+                var finishShopping = ReadValue("Finish shopping (Y/N): ");
+                if (string.IsNullOrEmpty(finishShopping))
+                {
+                    break;
+                }
+                if (string.Compare(finishShopping, "Y") == 0)
+                {
+                    state = true;
+                }
+                else if (string.Compare(finishShopping, "N") == 0)
+                {
+                    state = false;
+                }
+            } while (state);
             return productsList;
         }
 
-        private static string? ReadValue(string prompt)
+        private static string ReadValue(string prompt)
         {
             Console.Write(prompt);
             return Console.ReadLine();

@@ -10,11 +10,11 @@ namespace Laborator2.Domain
         {
         }
 
-        public InvalidProductPriceException(string? message) : base(message)
+        public InvalidProductPriceException(string message) : base(message)
         {
         }
 
-        public InvalidProductPriceException(string? message, Exception? innerException) : base(message, innerException)
+        public InvalidProductPriceException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
