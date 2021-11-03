@@ -6,6 +6,7 @@
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CSharp.Choices" Version="2.1.0-beta"/>
+    <PackageReference Include="CSharp.Choices" Version="2.0.1"/>
+    <PackageReference Include="CSharp.Choices.Attributes" Version="2.0.1"/>
   </ItemGroup>
 </Project>

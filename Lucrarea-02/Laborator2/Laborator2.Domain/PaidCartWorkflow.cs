@@ -18,7 +18,7 @@ namespace Laborator2.Domain
             return cart.Match(
                 whenEmptyCartState: emptyCart => new PaidCartFailedEvent("Cart still empty"),
                 whenUnvalidatedCartState: unvalidatedCart => new PaidCartFailedEvent("Unexpected unvalidated state") as IPaidCartEvent,
-                whenInvalidatedCartState: invalidatedCart => new PaidCartFailedEvent("Unexpected invalidated state"),
+                whenInvalidatedCartState: invalidatedCart => new PaidCartFailedEvent("Unexpected invalidated state: " + invalidatedCart.Reason),
                 whenValidatedCartState: validatedCart => new PaidCartFailedEvent("Unexpected validated state"),
                 whenCalculatedCartState: calculatedCart => new PaidCartFailedEvent("Unexpected calculated state"),
                 whenPaidCartState: paidCart => new PaidCartSuccedeedEvent(paidCart.Csv)

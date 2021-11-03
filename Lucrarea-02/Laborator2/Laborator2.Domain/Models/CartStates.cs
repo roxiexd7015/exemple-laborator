@@ -26,14 +26,14 @@ namespace Laborator2.Domain.Models
         }
         public record InvalidatedCartState : ICartStates
         {
-            internal InvalidatedCartState(IReadOnlyCollection<UnvalidatedCart> productsList, string csv)
+            internal InvalidatedCartState(IReadOnlyCollection<UnvalidatedCart> productsList, string reason)
             {
                 ProductsList = productsList;
-                Csv = csv;
+                Reason = reason;
             }
 
             public IReadOnlyCollection<UnvalidatedCart> ProductsList { get; }
-            public string Csv { get; }
+            public string Reason { get; }
         }
 
         public record ValidatedCartState : ICartStates

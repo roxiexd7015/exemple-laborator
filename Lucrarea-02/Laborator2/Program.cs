@@ -27,21 +27,21 @@ namespace Laborator2
                     whenPaidCartSuccedeedEvent: @event =>
                     {
                         Console.WriteLine($"Payment succeeded.");
+                        var name = ReadValue("Client name: ");
+                        Console.WriteLine("Thank you for shopping, " + name.ToString());
+                        var address = ReadValue("Client address: ");
+                        Console.WriteLine("Delivery will be made at: " + address.ToString());
                         Console.WriteLine(@event.Csv);
                         return @event;
                     }
                 );
-
-            var name = ReadValue("Client name: ");
-            Console.WriteLine("Welcome, " + name.ToString());
-            var address = ReadValue("Client address: ");
-            Console.WriteLine("Delivery will be made at: " + address.ToString());
         }
 
         private static List<UnvalidatedCart> ReadProductsList()
         {
             List<UnvalidatedCart> productsList = new();
             bool state = false;
+            Console.WriteLine("Welcome! Please enjoy your shopping!");
             do
             {
                 var code = ReadValue("Product code: ");

@@ -9,7 +9,7 @@ namespace Laborator2.Domain.Models
 {
     public record Client
     {
-        private static readonly Regex ValidAddress = new("^RO");
+        private static readonly Regex ValidAddress = new("^RO ");
         public string Address { get; }
 
         public Client(string address)
@@ -20,7 +20,7 @@ namespace Laborator2.Domain.Models
             }
             else
             {
-                throw new InvalidClientAddressException("Client name is invalid.");
+                throw new InvalidClientAddressException("Client address is invalid.");
             }
         }
 
