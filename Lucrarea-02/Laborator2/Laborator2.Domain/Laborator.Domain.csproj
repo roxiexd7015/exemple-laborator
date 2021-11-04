@@ -4,9 +4,11 @@
     <TargetFramework>net5.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CSharp.Choices" Version="2.0.1"/>
     <PackageReference Include="CSharp.Choices.Attributes" Version="2.0.1"/>
+    <PackageReference Include="LanguageExt.Core" Version="4.0.3"/>
   </ItemGroup>
 </Project>

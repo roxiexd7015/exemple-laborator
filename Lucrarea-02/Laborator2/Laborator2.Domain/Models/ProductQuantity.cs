@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
-namespace Laborator2.Domain
+namespace Laborator2.Domain.Models
 {
     public record ProductQuantity
     {
@@ -31,8 +33,8 @@ namespace Laborator2.Domain
         {
             return $"{Value:0.##} ";
         }
-        private static bool IsValid(decimal decimalValue) => decimalValue > 0 && decimalValue < 10;
-        public static bool TryParseQuantity(string stringValue, out ProductQuantity quantity)
+        private static bool IsValid(decimal decimalValue) => decimalValue > 0 && decimalValue < 20;
+        /*public static bool TryParseQuantity(string stringValue, out ProductQuantity quantity)
         {
             bool isValid = false;
             quantity = null;
@@ -46,7 +48,17 @@ namespace Laborator2.Domain
             }
 
             return isValid;
+        }*/
+        public static Option<ProductQuantity> TryParseQuantity(string stringValue)
+        {
+            if (decimal.TryParse(stringValue, out decimal decimalValue) && IsValid(decimalValue))
+            {
+                return Some<ProductQuantity>(new(decimalValue));
+            }
+            else
+            {
+                return None;
+            }
         }
-
     }
 }

@@ -5,15 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Laborator2.Domain.Models
 {
     public record ProductCode
     {
         private static readonly Regex ValidPattern = new("^ID[0-9]{3}$");
-        public string Value { get; }
 
-        private ProductCode(string value)
+        public string Value;
+        public ProductCode(string value)
         {
             if (IsValid(value))
             {
@@ -23,13 +25,14 @@ namespace Laborator2.Domain.Models
             {
                 throw new InvalidProductCodeException("");
             }
+
         }
         public override string ToString()
         {
-            return Value;
+            return $"{Value}";
         }
         private static bool IsValid(string stringValue) => ValidPattern.IsMatch(stringValue);
-        public static bool TryParseCode(string stringValue, out ProductCode code)
+        /*public static bool TryParseCode(string stringValue, out ProductCode code)
         {
             bool isValid = false;
             code = null;
@@ -40,6 +43,17 @@ namespace Laborator2.Domain.Models
             }
 
             return isValid;
+        }*/
+        public static Option<ProductCode> TryParseCode(string stringValue)
+        {
+            if (IsValid(stringValue))
+            {
+                return Some<ProductCode>(new(stringValue));
+            }
+            else
+            {
+                return None;
+            }
         }
     }
 }
