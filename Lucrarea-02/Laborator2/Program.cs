@@ -42,7 +42,7 @@ namespace Laborator2
             var productsList = ReadProductsList().ToArray();
             PayCartCommand command = new(productsList);
             PaidCartWorkflow workflow = new PaidCartWorkflow();
-            var result = await workflow.ExecuteAsync(command, CheckProductExists);
+            var result = await workflow.ExecuteAsync(command, CheckProductExists, CheckStock, CheckAddress);
 
             result.Match(
                     whenPaidCartFailedEvent: @event =>
@@ -54,41 +54,20 @@ namespace Laborator2
                     whenPaidCartSuccedeedEvent: @event =>
                     {
                         Console.WriteLine($"Payment succeeded.");
-                        var name = ReadValue("Client name: ");
-                        Console.WriteLine("Thank you for shopping, " + name.ToString());
-                        var address = ReadValue("Client address: ");
-                        Console.WriteLine("Delivery will be made at: " + address.ToString());
                         Console.WriteLine(@event.Csv);
                         return @event;
                     }
                 );
             //*/
         }
-
-        private static int Sum()
-        {
-            Option<int> two = Some(2);
-            Option<int> four = Some(4);
-            Option<int> six = Some(6);
-            Option<int> none = None;
-
-            var result = from x in two
-                         from y in four
-                         from z in six
-                         from n in none
-                         select x + y + z + n;
-            // This expression succeeds because all items to the right of 'in' are Some of int
-            // and therefore it lands in the Some lambda.
-            int r = match(result,
-                           Some: v => v * 2,
-                           None: () => 0);     // r == 24
-
-            return r;
-        }
         private static List<UnvalidatedCart> ReadProductsList()
         {
             List<UnvalidatedCart> productsList = new();
             bool state = false;
+            var name = ReadValue("Client name: ");
+            Console.WriteLine("Welcome, " + name.ToString());
+            var address = ReadValue("Client address: ");
+            Console.WriteLine("Delivery will be made at: " + address.ToString());
             Console.WriteLine("Welcome! Please enjoy your shopping!");
             do
             {
@@ -107,7 +86,7 @@ namespace Laborator2
                 {
                     break;
                 }
-                productsList.Add(new(code, price, quantity));
+                productsList.Add(new(code, price, quantity, address));
 
                 var finishShopping = ReadValue("Finish shopping (Y/N): ");
                 if (string.IsNullOrEmpty(finishShopping))
@@ -116,11 +95,11 @@ namespace Laborator2
                 }
                 if (string.Compare(finishShopping, "Y") == 0)
                 {
-                    state = true;
+                    state = false;
                 }
                 else if (string.Compare(finishShopping, "N") == 0)
                 {
-                    state = false;
+                    state = true;
                 }
             } while (state);
             return productsList;
@@ -131,19 +110,8 @@ namespace Laborator2
             Console.Write(prompt);
             return Console.ReadLine();
         }
-        private static TryAsync<bool> CheckProductExists(ProductCode code)
-        {
-            Func<Task<bool>> func = async () =>
-                 {
-                     //HttpClient client = new HttpClient();
-
-                     //var response = await client.PostAsync($"www.university.com/checkRegistrationNumber?number={student.Value}", new StringContent(""));
-
-                     //response.EnsureSuccessStatusCode(); //200
-
-                     return true;
-                 };
-            return TryAsync(func);
-        }
+        private static TryAsync<bool> CheckProductExists(ProductCode code) => async () => true;
+        private static TryAsync<bool> CheckStock(ProductCode code, ProductQuantity quantity) => async () => true;
+        private static TryAsync<bool> CheckAddress(Client address) => async () => true;
     }
 }

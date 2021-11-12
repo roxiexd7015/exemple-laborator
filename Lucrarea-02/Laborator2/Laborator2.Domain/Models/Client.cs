@@ -4,45 +4,43 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Laborator2.Domain.Models
 {
     public record Client
     {
         private static readonly Regex ValidAddress = new("^RO ");
-        public string Address { get; }
 
-        public Client(string address)
+        public string Value { get; }
+        public Client(string value)
         {
-            if (IsValid(address))
+            if (IsValid(value))
             {
-                Address = address;
+                Value = value;
             }
             else
             {
                 throw new InvalidClientAddressException("Client address is invalid.");
             }
-        }
 
+        }
         public override string ToString()
         {
-            return $"{Address:0.##}";
+            return $"{Value}";
         }
-
         private static bool IsValid(string stringValue) => ValidAddress.IsMatch(stringValue);
-
-        public static bool TryParseAddress(string stringValue, out Client address)
+        public static Option<Client> TryParseAddress(string stringValue)
         {
-            bool isValid = false;
-            address = null;
-
             if (IsValid(stringValue))
             {
-                isValid = true;
-                address = new(stringValue);
+                return Some<Client>(new(stringValue));
             }
-
-            return isValid;
+            else
+            {
+                return None;
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Laborator2.Domain.Models
     {
         private static readonly Regex ValidPattern = new("^ID[0-9]{3}$");
 
-        public string Value;
+        public string Value { get; }
         public ProductCode(string value)
         {
             if (IsValid(value))

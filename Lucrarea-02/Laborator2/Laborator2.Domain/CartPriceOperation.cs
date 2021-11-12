@@ -12,26 +12,32 @@ namespace Laborator2.Domain
 {
     public static class CartPriceOperation
     {
-        public static Task<ICartStates> ValidateProductCart(Func<ProductCode, TryAsync<bool>> checkProductExists, UnvalidatedCartState cart) =>
+        public static Task<ICartStates> ValidateProductsCart(Func<ProductCode, TryAsync<bool>> checkProductExists, Func<ProductCode, ProductQuantity, TryAsync<bool>> checkStock, Func<Client, TryAsync<bool>> checkAddress, UnvalidatedCartState cart) =>
             cart.ProductsList
-                    .Select(ValidateProductsCart(checkProductExists))
+                    .Select(ValidateProductCart(checkProductExists, checkStock, checkAddress))
                     .Aggregate(CreateEmptyValidatedProductList().ToAsync(), ReduceValidProduct)
                     .MatchAsync(
                         Right: validatedCart => new ValidatedCartState(validatedCart),
                         LeftAsync: errorMessage => Task.FromResult((ICartStates)new InvalidatedCartState(cart.ProductsList, errorMessage))
                     );
-        private static Func<UnvalidatedCart, EitherAsync<string, ValidatedCart>> ValidateProductsCart(Func<ProductCode, TryAsync<bool>> checkProductExists) =>
-            unvalidatedProduct => ValidateProductsCart(checkProductExists, unvalidatedProduct);
-        private static EitherAsync<string, ValidatedCart> ValidateProductsCart(Func<ProductCode, TryAsync<bool>> checkProductExists, UnvalidatedCart unvalidatedProduct) =>
+        private static Func<UnvalidatedCart, EitherAsync<string, ValidatedCart>> ValidateProductCart(Func<ProductCode, TryAsync<bool>> checkProductExists, Func<ProductCode, ProductQuantity, TryAsync<bool>> checkStock, Func<Client, TryAsync<bool>> checkAddress) =>
+            unvalidatedProduct => ValidateProductCart(checkProductExists, checkStock, checkAddress, unvalidatedProduct);
+        private static EitherAsync<string, ValidatedCart> ValidateProductCart(Func<ProductCode, TryAsync<bool>> checkProductExists, Func<ProductCode, ProductQuantity, TryAsync<bool>> checkStock, Func<Client, TryAsync<bool>> checkAddress, UnvalidatedCart unvalidatedProduct) =>
             from productCode in ProductCode.TryParseCode(unvalidatedProduct.ProductCode)
                                    .ToEitherAsync(() => $"Invalid product code ({unvalidatedProduct.ProductCode})")
             from productPrice in ProductPrice.TryParsePrice(unvalidatedProduct.ProductPrice)
                                    .ToEitherAsync(() => $"Invalid product price ({unvalidatedProduct.ProductPrice})")
             from productQuantity in ProductQuantity.TryParseQuantity(unvalidatedProduct.ProductQuantity)
                                    .ToEitherAsync(() => $"Invalid product quantity ({unvalidatedProduct.ProductQuantity})")
+            from clientAddress in Client.TryParseAddress(unvalidatedProduct.ClientAddress)
+                                   .ToEitherAsync(() => $"Invalid client address ({unvalidatedProduct.ClientAddress})")
             from productExists in checkProductExists(productCode)
                                    .ToEither(error => error.ToString())
-            select new ValidatedCart(productCode, productPrice, productQuantity);
+            from validStock in checkStock(productCode, productQuantity)
+                                   .ToEither(error => error.ToString())
+            from validAddress in checkAddress(clientAddress)
+                                   .ToEither(error => error.ToString())
+            select new ValidatedCart(productCode, productPrice, productQuantity, clientAddress);
         private static Either<string, List<ValidatedCart>> CreateEmptyValidatedProductList() =>
             Right(new List<ValidatedCart>());
         private static EitherAsync<string, List<ValidatedCart>> ReduceValidProduct(EitherAsync<string, List<ValidatedCart>> acc, EitherAsync<string, ValidatedCart> next) =>
