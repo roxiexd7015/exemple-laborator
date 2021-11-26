@@ -39,6 +39,7 @@ namespace Laborator2
             //*/
 
             ///*
+
             var productsList = ReadProductsList().ToArray();
             PayCartCommand command = new(productsList);
             PaidCartWorkflow workflow = new PaidCartWorkflow();
@@ -80,6 +81,7 @@ namespace Laborator2
                 if (string.IsNullOrEmpty(price))
                 {
                     break;
+
                 }
                 var quantity = ReadValue("Product quantity: ");
                 if (string.IsNullOrEmpty(quantity))

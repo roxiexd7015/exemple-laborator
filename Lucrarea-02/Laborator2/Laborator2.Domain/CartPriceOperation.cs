@@ -120,10 +120,10 @@ namespace Laborator2.Domain
                                              .AsReadOnly());
 
         private static CalculatedFinalPrice CalculateFinalCart(ValidatedCart validCart) =>
-            new CalculatedFinalPrice(validCart.code,
-                                     validCart.price,
-                                     validCart.quantity,
-                                     validCart.price * validCart.quantity);
+            new CalculatedFinalPrice(validCart.ProductCode,
+                                     validCart.ProductPrice,
+                                     validCart.ProductQuantity,
+                                     validCart.ProductPrice * validCart.ProductQuantity);
         /*public static ICartStates PayFinalCartPrice(ICartStates cart) => cart.Match(
             whenEmptyCartState: emptyCart => emptyCart,
             whenUnvalidatedCartState: unvalidatedCart => unvalidatedCart,
@@ -151,6 +151,6 @@ namespace Laborator2.Domain
             new PaidCartState(calculatedCart.ProductsList,
                               calculatedCart.ProductsList.Aggregate(new StringBuilder(), CreateCsvLine).ToString());
         private static StringBuilder CreateCsvLine(StringBuilder export, CalculatedFinalPrice list) =>
-            export.AppendLine($"Product: ID: {list.code.Value}, price: {list.price.Value}, quantity: {list.quantity.Value}. TOTAL price: {list.totalPrice.Value}");
+            export.AppendLine($"Product: ID: {list.ProductCode.Value}, price: {list.ProductPrice.Value}, quantity: {list.ProductQuantity.Value}. TOTAL price: {list.TotalPrice.Value}");
     }
 }

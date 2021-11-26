@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Laborator2.Domain.Models
 {
-    public record ValidatedCart(ProductCode code, ProductPrice price, ProductQuantity quantity, Client address);
+    public record ValidatedCart(ProductCode ProductCode, ProductPrice ProductPrice, ProductQuantity ProductQuantity, Client Address);
 }
