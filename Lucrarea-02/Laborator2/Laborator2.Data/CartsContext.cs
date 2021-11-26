@@ -13,7 +13,7 @@ namespace Laborator2.Data
         public CartsContext(DbContextOptions<CartsContext> options) : base(options)
         {
         }
-
+        //dotnet ef dbcontext scaffold "Server=DESKTOP-5M0QVHJ;Database=pssc-db-hw;Trusted_Connection=True;MultipleActiveResultSets=true" Microsoft.EntityFrameworkCore.SqlServer -o Models
         public DbSet<ProductDto> Products { get; set; }
         public DbSet<OrderHeaderDto> OrderHeaders { get; set; }
         public DbSet<OrderLineDto> OrderLines { get; set; }
