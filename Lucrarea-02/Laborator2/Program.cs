@@ -7,44 +7,36 @@ using static Laborator2.Domain.Models.PaidCartEvent;
 using LanguageExt;
 using static LanguageExt.Prelude;
 using System.Threading.Tasks;
+using System.Net.Http;
+using Laborator2.Data.Repositories;
+using Laborator2.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Laborator2
 {
     class Program
     {
         private static readonly Random random = new Random();
-
+        private static string ConnectionString = "Server=DESKTOP-5M0QVHJ;Database=pssc-db-hw;Trusted_Connection=True;MultipleActiveResultSets=true";
         static async Task Main(string[] args)
         {
-            /*
-            var testCode = ProductCode.TryParseCode("ID123");
-            var productExists = await testCode.Match(
-                Some: testCode => CheckProductExists(testCode).Match(Succ: value => value, exception => false),
-                None: () => Task.FromResult(false)
-            );
-
-            var result = from productCode in ProductCode.TryParseCode("ID123")
-                                                    .ToEitherAsync(() => "Invlid product code.")
-                         from exists in CheckProductExists(productCode)
-                                                    .ToEither(ex =>
-                                                    {
-                                                        Console.Error.WriteLine(ex.ToString());
-                                                        return "Could not validate product code";
-                                                    })
-                         select exists;
-
-            await result.Match(
-                 Left: message => Console.WriteLine(message),
-                 Right: flag => Console.WriteLine(flag));
-            //*/
-
-            ///*
+            using ILoggerFactory loggerFactory = ConfigureLoggerFactory();
+            ILogger<PaidCartWorkflow> logger = loggerFactory.CreateLogger<PaidCartWorkflow>();
 
             var productsList = ReadProductsList().ToArray();
             PayCartCommand command = new(productsList);
-            PaidCartWorkflow workflow = new PaidCartWorkflow();
-            var result = await workflow.ExecuteAsync(command, CheckProductExists, CheckStock, CheckAddress);
+            var dbContextBuilder = new DbContextOptionsBuilder<CartsContext>()
+                                                .UseSqlServer(ConnectionString)
+                                                .UseLoggerFactory(loggerFactory);
+            CartsContext cartsContext = new CartsContext(dbContextBuilder.Options);
+            ProductsRepository productsRepository = new(cartsContext);
+            OrderLinesRepository orderLinesRepository = new(cartsContext);
+            OrderHeadersRepository orderHeadersRepository = new(cartsContext);
 
+            PaidCartWorkflow workflow = new(productsRepository, orderLinesRepository, orderHeadersRepository, logger);
+            var result = await workflow.ExecuteAsync(command);
+            //var result = await workflow.ExecuteAsync(command, CheckProductExists, CheckStock, CheckAddress);
             result.Match(
                     whenPaidCartFailedEvent: @event =>
                     {
@@ -59,7 +51,17 @@ namespace Laborator2
                         return @event;
                     }
                 );
-            //*/
+        }
+        private static ILoggerFactory ConfigureLoggerFactory()
+        {
+            return LoggerFactory.Create(builder =>
+                                builder.AddSimpleConsole(options =>
+                                {
+                                    options.IncludeScopes = true;
+                                    options.SingleLine = true;
+                                    options.TimestampFormat = "hh:mm:ss ";
+                                })
+                                .AddProvider(new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider()));
         }
         private static List<UnvalidatedCart> ReadProductsList()
         {
@@ -112,8 +114,30 @@ namespace Laborator2
             Console.Write(prompt);
             return Console.ReadLine();
         }
-        private static TryAsync<bool> CheckProductExists(ProductCode code) => async () => true;
-        private static TryAsync<bool> CheckStock(ProductCode code, ProductQuantity quantity) => async () => true;
-        private static TryAsync<bool> CheckAddress(Client address) => async () => true;
     }
 }
+
+
+/*
+           var testCode = ProductCode.TryParseCode("ID123");
+           var productExists = await testCode.Match(
+               Some: testCode => CheckProductExists(testCode).Match(Succ: value => value, exception => false),
+               None: () => Task.FromResult(false)
+           );
+
+           var result = from productCode in ProductCode.TryParseCode("ID123")
+                                                   .ToEitherAsync(() => "Invlid product code.")
+                        from exists in CheckProductExists(productCode)
+                                                   .ToEither(ex =>
+                                                   {
+                                                       Console.Error.WriteLine(ex.ToString());
+                                                       return "Could not validate product code";
+                                                   })
+                        select exists;
+
+           await result.Match(
+                Left: message => Console.WriteLine(message),
+                Right: flag => Console.WriteLine(flag));
+           //*/
+
+///*

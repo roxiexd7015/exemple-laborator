@@ -14,7 +14,7 @@ namespace Laborator2.Domain.Models
     {
         public decimal Value { get; }
 
-        private ProductPrice(decimal value)
+        public ProductPrice(decimal value)
         {
             if (IsValid(value))
             {

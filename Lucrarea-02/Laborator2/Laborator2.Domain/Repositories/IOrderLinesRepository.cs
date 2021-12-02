@@ -10,8 +10,7 @@ namespace Laborator2.Domain.Repositories
 {
     public interface IOrderLinesRepository
     {
-        TryAsync<List<ProductQuantity>> TryGetExistingQuantity(IEnumerable<int> quantityToCheck);
-        TryAsync<List<CalculatedFinalPrice>> TryGetExistingPrice();
-        TryAsync<Unit> TrySavePrice(PaidCartState price);
+        TryAsync<List<CalculatedFinalPrice>> TryGetExistingOrderLine();
+        TryAsync<Unit> TrySaveOrderLinePrice(PaidCartState orderPrice);
     }
 }

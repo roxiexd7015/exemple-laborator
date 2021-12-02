@@ -7,8 +7,6 @@ namespace Laborator2.Domain.Repositories
 {
     public interface IOrderHeadersRepository
     {
-        TryAsync<List<CalculatedFinalPrice>> TryGetExistingPrice();
-
-        TryAsync<Unit> TrySavePrice(PaidCartState price);
+        TryAsync<List<Client>> TryGetExistingOrderHeader(IEnumerable<string> addressToCheck);
     }
 }

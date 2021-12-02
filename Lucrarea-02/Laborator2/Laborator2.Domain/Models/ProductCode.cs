@@ -12,7 +12,7 @@ namespace Laborator2.Domain.Models
 {
     public record ProductCode
     {
-        private static readonly Regex ValidPattern = new("^ID[0-9]{3}$");
+        private static readonly Regex ValidPattern = new("^P[0-9]{3}$");
 
         public string Value { get; }
         public ProductCode(string value)
@@ -29,7 +29,7 @@ namespace Laborator2.Domain.Models
         }
         public override string ToString()
         {
-            return $"{Value}";
+            return Value;
         }
         private static bool IsValid(string stringValue) => ValidPattern.IsMatch(stringValue);
         /*public static bool TryParseCode(string stringValue, out ProductCode code)

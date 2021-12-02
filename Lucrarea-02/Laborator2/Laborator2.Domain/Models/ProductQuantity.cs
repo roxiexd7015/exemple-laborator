@@ -10,9 +10,9 @@ namespace Laborator2.Domain.Models
 {
     public record ProductQuantity
     {
-        public decimal Value { get; }
+        public int Value { get; }
 
-        public ProductQuantity(decimal value)
+        public ProductQuantity(int value)
         {
             if (IsValid(value))
             {
@@ -23,12 +23,7 @@ namespace Laborator2.Domain.Models
                 throw new InvalidProductQuantityException("");
             }
         }
-        public static ProductQuantity operator +(ProductQuantity a, ProductQuantity b) => new ProductQuantity((a.Value + b.Value) / 2m);
-        public ProductQuantity Round()
-        {
-            var roundedValue = Math.Round(Value);
-            return new ProductQuantity(roundedValue);
-        }
+        public static ProductQuantity operator +(ProductQuantity a, ProductQuantity b) => new ProductQuantity((a.Value + b.Value) / 2);
         public override string ToString()
         {
             return $"{Value:0.##} ";
@@ -51,9 +46,9 @@ namespace Laborator2.Domain.Models
         }*/
         public static Option<ProductQuantity> TryParseQuantity(string stringValue)
         {
-            if (decimal.TryParse(stringValue, out decimal decimalValue) && IsValid(decimalValue))
+            if (int.TryParse(stringValue, out int intValue) && IsValid(intValue))
             {
-                return Some<ProductQuantity>(new(decimalValue));
+                return Some<ProductQuantity>(new(intValue));
             }
             else
             {

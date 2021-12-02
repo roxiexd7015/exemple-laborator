@@ -35,6 +35,17 @@ namespace Laborator2.Domain.Models
             public IReadOnlyCollection<UnvalidatedCart> ProductsList { get; }
             public string Reason { get; }
         }
+        public record FailedCartState : ICartStates
+        {
+            internal FailedCartState(IReadOnlyCollection<UnvalidatedCart> productsList, Exception exception)
+            {
+                ProductsList = productsList;
+                Exception = exception;
+            }
+
+            public IReadOnlyCollection<UnvalidatedCart> ProductsList { get; }
+            public Exception Exception { get; }
+        }
 
         public record ValidatedCartState : ICartStates
         {

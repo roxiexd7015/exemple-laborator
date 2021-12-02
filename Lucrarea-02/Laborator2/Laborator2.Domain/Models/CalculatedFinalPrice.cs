@@ -8,7 +8,7 @@ namespace Laborator2.Domain.Models
 {
     public record CalculatedFinalPrice(ProductCode ProductCode, ProductPrice ProductPrice, ProductQuantity ProductQuantity, ProductPrice TotalPrice)
     {
-        public int ProductId { get; set; }
+        public int OrderId { get; set; } //ProductId
         public bool IsUpdated { get; set; }
     }
 }
