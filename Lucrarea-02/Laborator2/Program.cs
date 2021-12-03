@@ -18,7 +18,7 @@ namespace Laborator2
     class Program
     {
         private static readonly Random random = new Random();
-        private static string ConnectionString = "Server=DESKTOP-5M0QVHJ;Database=pssc-db-hw;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string ConnectionString = "Server=DESKTOP-5M0QVHJ;Database=pssc_db_hw;Trusted_Connection=True;MultipleActiveResultSets=true";
         static async Task Main(string[] args)
         {
             using ILoggerFactory loggerFactory = ConfigureLoggerFactory();

@@ -51,7 +51,6 @@ namespace Laborator2.Data.Repositories
             var updatedOrders = orderPrice.ProductsList.Where(ol => ol.IsUpdated && ol.OrderId > 0)
                                     .Select(ol => new OrderLineDto()
                                     {
-                                        OrderLineId = ol.OrderId,
                                         ProductId = products[ol.ProductCode.Value].Single().ProductId,
                                         OrderId = orderLines[ol.OrderId].Single().OrderId,
                                         Quantity = ol.ProductQuantity.Value,
